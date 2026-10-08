@@ -621,6 +621,30 @@ $('#s-rated').textContent=DATA.filter(x=>x.pct!=null).length;
 $('#s-ebook').textContent=DATA.filter(x=>x.ekniha===true).length;
 $('#s-audio').textContent=DATA.filter(x=>x.audiokniha===true).length;
 
+/* návrat zpět z Databáze knih: obnovit filtry, otevřené detaily a pozici */
+let restoreY=null;
+(function(){
+  try{history.scrollRestoration='manual'}catch(e){}
+  const KEY='kod_view_v1';
+  const save=()=>{try{sessionStorage.setItem(KEY,JSON.stringify({s:state,o:[...open],y:window.scrollY}))}catch(e){}};
+  window.addEventListener('pagehide',save);
+  booksBox.addEventListener('click',ev=>{if(ev.target.closest('a'))save()},true);
+  let nav='';
+  try{const e=performance.getEntriesByType('navigation')[0];nav=e?e.type:''}catch(e){}
+  if(nav!=='back_forward')return;
+  try{
+    const v=JSON.parse(sessionStorage.getItem(KEY)||'null');
+    if(!v||!v.s)return;
+    Object.assign(state,v.s);
+    searchEl.value=state.q||'';sortEl.value=state.sort||'number';genreEl.value=state.genre||'';
+    decadeEl.value=state.decade||'';minEl.value=String(state.min||0);minOut.textContent=(state.min||0)+' %';
+    fmtBtns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.fmt===state.fmt)));
+    shelfBtns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf===state.shelf)));
+    (v.o||[]).forEach(i=>open.add(i));
+    restoreY=v.y||0;
+  }catch(e){}
+})();
+
 /* odkaz na konkrétní svazek */
 let hashId=null;
 (function fromHash(){
@@ -628,7 +652,8 @@ let hashId=null;
   if(m&&byId.has(Number(m[1]))){hashId=Number(m[1]);open.add(hashId)}
 })();
 render();
-if(hashId!==null){
+if(restoreY!==null){window.scrollTo(0,restoreY)}
+else if(hashId!==null){
   const node=booksBox.querySelector('[data-id="'+hashId+'"]');
   if(node){node.scrollIntoView({block:'center'});node.classList.add('flash')}
 }
