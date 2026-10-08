@@ -400,7 +400,7 @@ const open=new Set();
 DATA.forEach(x=>{
   x.y=parseInt(x.rok,10)||0;
   x.dt=x.titul.replace(/\s-\s/g,', ');
-  x.au=stripLife(x.autor).replace(/\s-\s/g,' ');
+  x.au=(function(a){const p=a.split(/,\s*/);if(p.length<2||p.length%2)return a;const o=[];for(let i=0;i<p.length;i+=2)o.push(p[i+1]+' '+p[i]);return o.join(', ')})(stripLife(x.autor).replace(/\s-\s/g,' '));
   x.hay=norm([x.dt,x.au,(x.zanry||[]).join(' '),x.anot,x.cislo].join(' '));
 });
 const byId=new Map(DATA.map(x=>[x.cislo,x]));
@@ -470,7 +470,7 @@ const sorters={
   votes:(a,b)=>(b.hod||0)-(a.hod||0)||a.cislo-b.cislo,
   year:(a,b)=>a.y-b.y||a.cislo-b.cislo,
   title:(a,b)=>a.dt.localeCompare(b.dt,'cs'),
-  author:(a,b)=>a.au.localeCompare(b.au,'cs')||a.cislo-b.cislo
+  author:(a,b)=>stripLife(a.autor).localeCompare(stripLife(b.autor),'cs')||a.cislo-b.cislo
 };
 function current(){return DATA.filter(matches).sort(sorters[state.sort])}
 
