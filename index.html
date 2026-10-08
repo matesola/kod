@@ -255,6 +255,65 @@ a.source:hover{color:var(--accent)}
 .d-note{margin:0 0 4px;font-size:.82rem;color:var(--muted);line-height:1.4}
 .title a,.title>span{font-size:1.24rem;line-height:1.15}
 @media(max-width:900px){.title a,.title>span{font-size:1.18rem}}
+
+/* ===== volby zobrazení ===== */
+.listhead{flex-wrap:wrap}
+.views{display:flex;gap:0;border:1px solid var(--ink)}
+.views button{border:0;background:transparent;min-height:38px;padding:6px 14px;font-weight:800;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;color:var(--ink)}
+.views button+button{border-left:1px solid var(--ink)}
+.views button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.listhead .right{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.table-head[hidden]{display:none}
+
+/* kompaktní */
+#books[data-view="compact"] .book{grid-template-columns:52px minmax(0,1fr) auto;gap:0 12px;padding:8px 8px 8px 0;min-height:0;align-items:center}
+#books[data-view="compact"] .num{grid-row:auto;grid-column:1;margin:-8px 0 -8px 0;padding:0 6px 5px 8px;font-size:.95rem;align-self:stretch}
+#books[data-view="compact"] .num:before{height:9px;top:5px}
+#books[data-view="compact"] .num{min-height:50px}
+#books[data-view="compact"] .title{grid-column:2;margin:0}
+#books[data-view="compact"] .title a,#books[data-view="compact"] .title>span{font-size:1rem}
+#books[data-view="compact"] .author{grid-column:2;margin:1px 0 0;font-size:.9rem;font-weight:500;color:var(--muted)}
+#books[data-view="compact"] .year,#books[data-view="compact"] .format,#books[data-view="compact"] .rating .bar,#books[data-view="compact"] .rating small,#books[data-view="compact"] .rating .mobile-label{display:none}
+#books[data-view="compact"] .rating{grid-column:3;grid-row:1/span 2;margin:0;display:block;text-align:right}
+#books[data-view="compact"] .rating strong{font-size:1rem}
+#books[data-view="compact"] .title{display:contents}
+#books[data-view="compact"] .title a{grid-column:2;grid-row:1}
+#books[data-view="compact"] .author{grid-row:2}
+#books[data-view="compact"] .chips{grid-column:3;grid-row:1/span 2;margin:0;justify-content:flex-end;flex-wrap:nowrap}
+#books[data-view="compact"] .book{grid-template-columns:52px minmax(0,1fr) auto 64px}
+#books[data-view="compact"] .rating{grid-column:4}
+@media(max-width:700px){
+  #books[data-view="compact"] .book{grid-template-columns:44px minmax(0,1fr) auto}
+  #books[data-view="compact"] .chips{grid-column:2;grid-row:3;justify-content:flex-start;flex-wrap:wrap;margin-top:6px}
+  #books[data-view="compact"] .rating{grid-column:3;grid-row:1/span 2}
+  #books[data-view="compact"] .num{grid-row:1/span 3}
+}
+#books[data-view="compact"] .book .detail{grid-column:1/-1;margin-top:10px}
+
+/* mřížka obálek */
+#books[data-view="grid"]{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px;padding-top:18px}
+#books[data-view="grid"] .book{display:flex;flex-direction:column;align-items:stretch;padding:0;min-height:236px;background:var(--c);border:0;color:#141414;box-shadow:0 1px 0 rgba(0,0,0,.25)}
+#books[data-view="grid"] .book:hover{background:var(--c);filter:brightness(1.04)}
+#books[data-view="grid"] .num{order:0;margin:0;padding:34px 12px 0;align-self:stretch;background:transparent;font-size:1.05rem;display:block}
+#books[data-view="grid"] .num:before{top:10px;left:0;right:0;height:17px}
+#books[data-view="grid"] .title{order:1;margin:8px 12px 0;background:#fffdf6;padding:10px 10px 8px;border:2px solid #141414;flex:1;display:flex;flex-direction:column}
+#books[data-view="grid"] .title a{font-size:1rem;color:#141414;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;text-decoration-color:var(--accent)}
+#books[data-view="grid"] .author{order:2;margin:8px 12px 0;font-size:.95rem;font-weight:700;color:#141414}
+#books[data-view="grid"] .rating{order:3;margin:6px 12px 0;display:flex;align-items:center;gap:8px;grid-template-columns:none}
+#books[data-view="grid"] .rating .bar{display:none}
+#books[data-view="grid"] .rating small,#books[data-view="grid"] .rating .mobile-label{display:none}
+#books[data-view="grid"] .rating strong{font-size:1.1rem}
+#books[data-view="grid"] .year,#books[data-view="grid"] .format{display:none}
+#books[data-view="grid"] .chips{margin-top:auto;padding-top:10px}
+#books[data-view="grid"] .chips .pill{background:#fffdf6;color:#141414;border-color:#141414}
+#books[data-view="grid"] .chips .pill[aria-pressed="true"]{background:#141414;color:#fffdf6}
+#books[data-view="grid"] .chips .pill.more{background:#fffdf6;color:var(--accent);border-color:var(--accent)}
+#books[data-view="grid"] .chips .pill.more[aria-expanded="true"]{background:var(--accent);color:var(--accent-ink)}
+#books[data-view="grid"] .book:after{content:"";display:block;height:16px;background:#141414;margin-top:10px;flex:0 0 auto;order:5}
+#books[data-view="grid"] .book:has(.detail){grid-column:1/-1;min-height:0}
+#books[data-view="grid"] .detail{order:6;background:#fbf8ee;color:#141414;margin:0;padding:18px 14px}
+@media(max-width:560px){#books[data-view="grid"]{grid-template-columns:repeat(2,1fr);gap:10px}#books[data-view="grid"] .title{margin:8px 8px 0;padding:8px 7px 7px}#books[data-view="grid"] .title a{font-size:.88rem}#books[data-view="grid"] .chips{gap:4px}#books[data-view="grid"] .chips .pill{padding:2px 5px;font-size:.6rem;min-height:26px;letter-spacing:.02em}#books[data-view="grid"] .chips .pill:before{display:none}#books[data-view="grid"] .chips .pill.more:after{margin-left:4px}#books[data-view="grid"] .author,#books[data-view="grid"] .rating{margin-left:8px;margin-right:8px}#books[data-view="grid"] .num{padding:34px 8px 0}}
+@media(max-width:700px){#books[data-view="compact"] .chips{gap:4px}#books[data-view="compact"] .chips .pill{padding:2px 6px;font-size:.62rem;letter-spacing:.02em}#books[data-view="compact"] .chips .pill:before{display:none}}
 </style>
 </head>
 <body>
@@ -331,8 +390,8 @@ a.source:hover{color:var(--accent)}
   </section>
 
   <main class="wrap">
-    <div class="listhead"><h2>Katalog svazků</h2><div class="count" id="count" aria-live="polite"></div></div>
-    <div class="table-head" aria-hidden="true"><span>Svazek</span><span>Titul</span><span>Autor</span><span>Rok vydání</span><span>Hodnocení</span><span>Ekniha</span><span>Audiokniha</span></div>
+    <div class="listhead"><h2>Katalog svazků</h2><div class="right"><div class="count" id="count" aria-live="polite"></div><div class="views" role="group" aria-label="Zobrazení"><button type="button" data-view="list" aria-pressed="true">Seznam</button><button type="button" data-view="compact" aria-pressed="false">Kompakt</button><button type="button" data-view="grid" aria-pressed="false">Mřížka</button></div></div></div>
+    <div class="table-head" id="thead" aria-hidden="true"><span>Svazek</span><span>Titul</span><span>Autor</span><span>Rok vydání</span><span>Hodnocení</span><span>Ekniha</span><span>Audiokniha</span></div>
     <div id="books"></div>
     <div id="empty" class="empty" hidden><strong>Nic tu není.</strong><span>Zkus jiný výraz nebo filtr.</span></div>
 
@@ -668,6 +727,19 @@ $('#s-total').textContent=DATA.length;
 $('#s-rated').textContent=DATA.filter(x=>x.pct!=null).length;
 $('#s-ebook').textContent=DATA.filter(x=>x.ekniha===true).length;
 $('#s-audio').textContent=DATA.filter(x=>x.audiokniha===true).length;
+
+/* volba zobrazení */
+const VIEW_KEY='kod_zobrazeni_v1';
+const viewBtns=[...document.querySelectorAll('.views button')];
+function setView(v,save){
+  if(!['list','compact','grid'].includes(v))v='list';
+  booksBox.dataset.view=v;
+  $('#thead').hidden=v!=='list';
+  viewBtns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===v)));
+  if(save){try{localStorage.setItem(VIEW_KEY,v)}catch(e){}}
+}
+viewBtns.forEach(b=>b.addEventListener('click',()=>{const y=window.scrollY;setView(b.dataset.view,true);window.scrollTo(0,y)}));
+(function(){let v='list';try{v=localStorage.getItem(VIEW_KEY)||'list'}catch(e){}setView(v,false)})();
 
 /* návrat zpět z Databáze knih: obnovit filtry, otevřené detaily a pozici */
 let restoreY=null;
