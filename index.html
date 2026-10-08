@@ -280,7 +280,7 @@ a.source:hover{color:var(--accent)}
     <div class="shelf-row">
       <div><strong id="own-n">0</strong><span id="own-t">mám doma z 212</span><div class="meter"><i id="own-bar"></i></div></div>
       <div><strong id="read-n">0</strong><span id="read-t">přečteno z 212</span><div class="meter"><i id="read-bar"></i></div></div>
-      <p class="shelf-note">U každého svazku si označ, co máš doma a co jsi přečetl. Ukládá se jen v tomto prohlížeči.</p>
+      <p class="shelf-note">U každého svazku si označ, co máš doma, co jsi přečetl a co chceš. Ukládá se jen v tomto prohlížeči.</p>
     </div>
   </section>
 
@@ -318,6 +318,7 @@ a.source:hover{color:var(--accent)}
         <button class="filter" type="button" data-shelf="all" aria-pressed="true">Celá edice</button>
         <button class="filter" type="button" data-shelf="own" aria-pressed="false">Mám doma</button>
         <button class="filter" type="button" data-shelf="missing" aria-pressed="false">Chybí mi</button>
+        <button class="filter" type="button" data-shelf="want" aria-pressed="false">Chci</button>
         <button class="filter" type="button" data-shelf="read" aria-pressed="false">Přečtené</button>
         <button class="filter" type="button" data-shelf="unread" aria-pressed="false">Nepřečtené</button>
       </div>
@@ -387,11 +388,11 @@ function el(tag,props,...kids){
 
 /* sbírka v localStorage */
 function loadShelf(){
-  try{const r=JSON.parse(localStorage.getItem(KEY)||'{}');return{own:new Set(r.own||[]),read:new Set(r.read||[])}}
-  catch(e){return{own:new Set(),read:new Set()}}
+  try{const r=JSON.parse(localStorage.getItem(KEY)||'{}');return{own:new Set(r.own||[]),read:new Set(r.read||[]),want:new Set(r.want||[])}}
+  catch(e){return{own:new Set(),read:new Set(),want:new Set()}}
 }
 function saveShelf(){
-  try{localStorage.setItem(KEY,JSON.stringify({own:[...shelf.own],read:[...shelf.read]}))}catch(e){}
+  try{localStorage.setItem(KEY,JSON.stringify({own:[...shelf.own],read:[...shelf.read],want:[...shelf.want]}))}catch(e){}
 }
 const shelf=loadShelf();
 const open=new Set();
@@ -454,9 +455,10 @@ function matches(x){
   if(state.fmt==='ebook'&&x.ekniha!==true)return false;
   if(state.fmt==='audio'&&x.audiokniha!==true)return false;
   if(state.fmt==='both'&&!(x.ekniha===true&&x.audiokniha===true))return false;
-  const own=shelf.own.has(x.cislo),read=shelf.read.has(x.cislo);
+  const own=shelf.own.has(x.cislo),read=shelf.read.has(x.cislo),want=shelf.want.has(x.cislo);
   if(state.shelf==='own'&&!own)return false;
   if(state.shelf==='missing'&&own)return false;
+  if(state.shelf==='want'&&!want)return false;
   if(state.shelf==='read'&&!read)return false;
   if(state.shelf==='unread'&&read)return false;
   if(state.genre&&!(x.zanry||[]).includes(state.genre))return false;
@@ -525,6 +527,7 @@ function row(x){
   title.append(el('div',{class:'chips'},
     el('button',{class:'pill',type:'button','data-act':'own','aria-pressed':String(shelf.own.has(x.cislo)),text:'Mám'}),
     el('button',{class:'pill',type:'button','data-act':'read','aria-pressed':String(shelf.read.has(x.cislo)),text:'Přečteno'}),
+    el('button',{class:'pill',type:'button','data-act':'want','aria-pressed':String(shelf.want.has(x.cislo)),text:'Chci'}),
     el('button',{class:'pill more',type:'button','data-act':'more','aria-expanded':String(isOpen),'aria-controls':isOpen?'d-'+x.cislo:null,text:'Detail'})));
   const author=el('div',{class:'author',text:x.au});
   const year=el('div',{class:'year'},el('span',{class:'mobile-label',text:'Vydání KOD'}),fmtYear(x.rok));
@@ -579,8 +582,8 @@ booksBox.addEventListener('click',ev=>{
   if(!b)return;
   const art=b.closest('.book');
   const id=Number(art.dataset.id),x=byId.get(id),act=b.dataset.act;
-  if(act==='own'||act==='read'){
-    const set=act==='own'?shelf.own:shelf.read;
+  if(act==='own'||act==='read'||act==='want'){
+    const set=act==='own'?shelf.own:act==='read'?shelf.read:shelf.want;
     if(set.has(id))set.delete(id);else set.add(id);
     saveShelf();
     b.setAttribute('aria-pressed',String(set.has(id)));
@@ -644,10 +647,10 @@ $('#random').addEventListener('click',()=>{
 });
 $('#csv').addEventListener('click',()=>{
   const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
-  const head=['Svazek','Titul','Autor','Vydáno v edici','Hodnocení (%)','Počet hodnocení','Žánry','Ekniha','Audiokniha','Mám doma','Přečteno','Databáze knih'];
+  const head=['Svazek','Titul','Autor','Vydáno v edici','Hodnocení (%)','Počet hodnocení','Žánry','Ekniha','Audiokniha','Mám doma','Přečteno','Chci','Databáze knih'];
   const lines=[head.map(q).join(';')];
   current().forEach(x=>lines.push([x.cislo,x.dt,x.au,fmtYear(x.rok),x.pct,x.hod,(x.zanry||[]).join(', '),
-    x.ekniha===true?'ano':'ne',x.audiokniha===true?'ano':'ne',shelf.own.has(x.cislo)?'ano':'ne',shelf.read.has(x.cislo)?'ano':'ne',dkUrl(x)].map(q).join(';')));
+    x.ekniha===true?'ano':'ne',x.audiokniha===true?'ano':'ne',shelf.own.has(x.cislo)?'ano':'ne',shelf.read.has(x.cislo)?'ano':'ne',shelf.want.has(x.cislo)?'ano':'ne',dkUrl(x)].map(q).join(';')));
   const blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
   const a=el('a',{href:URL.createObjectURL(blob),download:'edice-kod.csv'});
   document.body.append(a);a.click();a.remove();
