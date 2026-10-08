@@ -198,7 +198,7 @@ input[type=range]{padding:0;border:0;background:transparent;accent-color:var(--a
 .pill{border:1px solid var(--ink);background:transparent;padding:3px 9px;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;min-height:28px}
 .pill:hover{background:var(--soft)}
 .pill[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
-.pill[aria-pressed="true"]:before{content:"✓ "}
+.pill[aria-pressed="true"]:before{content:"";display:inline-block;width:4px;height:8px;margin-right:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-1px) rotate(40deg)}
 .pill.more[aria-expanded="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .rating small{grid-column:1/-1;color:var(--muted);font-size:.7rem;margin-top:-2px}
 a.source{text-decoration:underline dotted;text-underline-offset:2px}
@@ -213,7 +213,7 @@ a.source:hover{color:var(--accent)}
 .d-links h3{margin:0 0 4px;font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
 .btn{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid var(--ink);padding:10px 12px;font-weight:800;text-decoration:none;font-size:.88rem}
 .btn small{display:block;font-weight:600;color:var(--muted);font-size:.74rem;margin-top:1px}
-.btn:after{content:"↗";font-weight:400;flex:0 0 auto}
+.btn:after{content:"";flex:0 0 auto;width:8px;height:8px;margin-right:4px;border-top:2px solid currentColor;border-right:2px solid currentColor;transform:rotate(45deg)}
 .btn:hover{background:var(--ink);color:var(--paper)}
 .btn:hover small{color:inherit}
 .flash{animation:flash 1.6s ease-out}
