@@ -18,6 +18,7 @@
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://kod-neon.vercel.app/og.jpg">
+  <script>try{var t=localStorage.getItem('kod_tema_v1');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
   <title>Edice KOD</title>
   <style>
     :root{
@@ -28,7 +29,7 @@
       --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
       --sans:"Avenir Next",Avenir,"Helvetica Neue",sans-serif;
     }
-    @media(prefers-color-scheme:dark){:root{
+    @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
       --paper:#151a18;--paper-2:#1d2421;--ink:#eef1ec;--muted:#b3bcb6;
       --rule:#4a5550;--soft:#2c3531;--accent:#ef6b4f;--accent-ink:#1a100d;
       --yes:#79c9a9;--warn:#e0b35b;--no:#9ba39e;--focus:#8dd8bc;
@@ -133,7 +134,15 @@
   --gut:calc((100vw - min(1320px,100vw - 40px))/2);
   --paper:#f2efe3;--paper-2:#faf8f0;--ink:#141414;--muted:#55534a;--rule:#b5b1a0;--soft:#dcd8c6;
 }
-@media(prefers-color-scheme:dark){:root{--paper:#161614;--paper-2:#21201c;--ink:#f1eee6;--muted:#b5b2a8;--rule:#4a4943;--soft:#2c2b27}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#161614;--paper-2:#21201c;--ink:#f1eee6;--muted:#b5b2a8;--rule:#4a4943;--soft:#2c2b27}}
+:root[data-theme="dark"]{color-scheme:dark;--paper:#161614;--paper-2:#21201c;--ink:#f1eee6;--muted:#b5b2a8;--rule:#4a4943;--soft:#2c2b27;--accent:#ef6b4f;--accent-ink:#1a100d;--yes:#79c9a9;--warn:#e0b35b;--no:#9ba39e;--focus:#8dd8bc}
+:root[data-theme="light"]{color-scheme:light}
+.themebar{display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:8px 0;background:var(--paper);border-bottom:1px solid var(--rule)}
+.themebar .lbl{font-size:.72rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.themes{display:flex;border:1px solid var(--ink)}
+.themes button{border:0;background:transparent;color:var(--ink);min-height:32px;padding:4px 12px;font-weight:800;font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;cursor:pointer}
+.themes button+button{border-left:1px solid var(--ink)}
+.themes button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 @media(max-width:640px){:root{--gut:14px}}
 
 /* obálka */
@@ -317,6 +326,7 @@ a.source:hover{color:var(--accent)}
 </style>
 </head>
 <body>
+  <div class="themebar"><div class="wrap" style="display:flex;justify-content:flex-end;align-items:center;gap:10px"><span class="lbl">Vzhled</span><div class="themes" role="group" aria-label="Vzhled stránky"><button type="button" data-theme-set="auto" aria-pressed="true">Auto</button><button type="button" data-theme-set="light" aria-pressed="false">Světlý</button><button type="button" data-theme-set="dark" aria-pressed="false">Tmavý</button></div></div></div>
   <header class="hero" id="top">
     <div class="wrap cover">
       <div class="cover-text">
@@ -735,6 +745,24 @@ $('#s-total').textContent=DATA.length;
 $('#s-rated').textContent=DATA.filter(x=>x.pct!=null).length;
 $('#s-ebook').textContent=DATA.filter(x=>x.ekniha===true).length;
 $('#s-audio').textContent=DATA.filter(x=>x.audiokniha===true).length;
+
+/* volba vzhledu */
+(function(){
+  const K='kod_tema_v1',root=document.documentElement;
+  const btns=[...document.querySelectorAll('[data-theme-set]')];
+  const meta=document.querySelector('meta[name="theme-color"]');
+  const show=t=>{
+    if(t==='light'||t==='dark')root.setAttribute('data-theme',t);else root.removeAttribute('data-theme');
+    btns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.themeSet===t)));
+    if(meta)meta.setAttribute('content',t==='dark'?'#161614':'#e8dc6a');
+  };
+  let cur='auto';try{const v=localStorage.getItem(K);if(v==='light'||v==='dark')cur=v}catch(e){}
+  show(cur);
+  btns.forEach(b=>b.addEventListener('click',()=>{
+    const t=b.dataset.themeSet;show(t);
+    try{if(t==='auto')localStorage.removeItem(K);else localStorage.setItem(K,t)}catch(e){}
+  }));
+})();
 
 /* volba zobrazení */
 const VIEW_KEY='kod_zobrazeni_v1';
