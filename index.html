@@ -238,7 +238,6 @@ a.source:hover{color:var(--accent)}
   .year{margin-top:10px}
 }
 .title a{color:var(--accent);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
-.title a:after{content:" \2197";font-weight:800;text-decoration:none;display:inline-block}
 .title a:hover,.title a:focus-visible{background:var(--accent);color:var(--accent-ink);text-decoration-color:transparent}
 .d-group{margin:14px 0 6px;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .d-chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -491,7 +490,7 @@ function detail(x){
   links.push(btn(dkUrl(x),'Databáze knih',x.dk?'hodnocení a komentáře':'hledání v databázi'));
   const group=(title,list)=>{
     links.push(el('h4',{class:'d-group',text:title}));
-    links.push(el('div',{class:'d-chips'},...list.map(i=>el('a',{class:'chip'+(i.hit?' hit':''),href:i.href,target:'_blank',rel:'noopener noreferrer',title:i.sub,text:i.name+' \u2197'}))));
+    links.push(el('div',{class:'d-chips'},...list.map(i=>el('a',{class:'chip'+(i.hit?' hit':''),href:i.href,target:'_blank',rel:'noopener noreferrer',title:i.sub,text:i.name}))));
   };
   group('Papírová kniha, antikvariáty',shopList(null,null,['Knihobot','Ulovknihu'],x,2));
   group('Nové vydání, pokud existuje',shopList(null,null,['Knihy Dobrovský','Kosmas','Martinus'],x,3));
