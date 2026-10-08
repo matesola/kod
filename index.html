@@ -806,17 +806,17 @@ $('#s-audio').textContent=DATA.filter(x=>x.audiokniha===true).length;
 })();
 
 /* volba zobrazení */
-const VIEW_KEY='kod_zobrazeni_v1';
+const VIEW_KEY='kod_zobrazeni_v2';
 const viewBtns=[...document.querySelectorAll('.views button')];
 function setView(v,save){
-  if(!['list','compact','grid'].includes(v))v='list';
+  if(!['list','compact','grid'].includes(v))v='grid';
   booksBox.dataset.view=v;
   $('#thead').hidden=v!=='list';
   viewBtns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===v)));
   if(save){try{localStorage.setItem(VIEW_KEY,v)}catch(e){}}
 }
 viewBtns.forEach(b=>b.addEventListener('click',()=>{const y=window.scrollY;setView(b.dataset.view,true);window.scrollTo(0,y)}));
-(function(){let v='list';try{v=localStorage.getItem(VIEW_KEY)||'list'}catch(e){}setView(v,false)})();
+(function(){let v='grid';try{v=localStorage.getItem(VIEW_KEY)||'grid'}catch(e){}setView(v,false)})();
 
 /* návrat zpět z Databáze knih: obnovit filtry, otevřené detaily a pozici */
 let restoreY=null;
