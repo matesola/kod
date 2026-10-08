@@ -353,12 +353,16 @@ a.source:hover{color:var(--accent)}
         <div class="sort">
           <label for="sort">Řazení</label>
           <select id="sort">
-            <option value="number">Číslo svazku</option>
-            <option value="rating">Hodnocení, nejvyšší</option>
-            <option value="votes">Nejvíc hodnocení</option>
-            <option value="year">Rok vydání v edici</option>
-            <option value="title">Název, abecedně</option>
-            <option value="author">Autor, abecedně</option>
+            <option value="number">Číslo svazku, od 1</option>
+            <option value="number-desc">Číslo svazku, od 212</option>
+            <option value="rating">Hodnocení, od nejlepšího</option>
+            <option value="rating-asc">Hodnocení, od nejhoršího</option>
+            <option value="votes">Počet hodnocení, nejvíc</option>
+            <option value="votes-asc">Počet hodnocení, nejméně</option>
+            <option value="title">Název, A až Z</option>
+            <option value="title-desc">Název, Z až A</option>
+            <option value="author">Autor, A až Z</option>
+            <option value="author-desc">Autor, Z až A</option>
           </select>
         </div>
       </div>
@@ -527,11 +531,15 @@ function matches(x){
 }
 const sorters={
   number:(a,b)=>a.cislo-b.cislo,
-  rating:(a,b)=>(b.pct==null?-1:b.pct)-(a.pct==null?-1:a.pct)||a.cislo-b.cislo,
+  'number-desc':(a,b)=>b.cislo-a.cislo,
+  rating:(a,b)=>(b.pct==null?-1:b.pct)-(a.pct==null?-1:a.pct)||(b.hod||0)-(a.hod||0)||a.cislo-b.cislo,
+  'rating-asc':(a,b)=>(a.pct==null?1e3:a.pct)-(b.pct==null?1e3:b.pct)||(b.hod||0)-(a.hod||0)||a.cislo-b.cislo,
   votes:(a,b)=>(b.hod||0)-(a.hod||0)||a.cislo-b.cislo,
-  year:(a,b)=>a.y-b.y||a.cislo-b.cislo,
-  title:(a,b)=>a.dt.localeCompare(b.dt,'cs'),
-  author:(a,b)=>stripLife(a.autor).localeCompare(stripLife(b.autor),'cs')||a.cislo-b.cislo
+  'votes-asc':(a,b)=>(a.hod==null?1e9:a.hod)-(b.hod==null?1e9:b.hod)||a.cislo-b.cislo,
+  title:(a,b)=>a.dt.localeCompare(b.dt,'cs')||a.cislo-b.cislo,
+  'title-desc':(a,b)=>b.dt.localeCompare(a.dt,'cs')||a.cislo-b.cislo,
+  author:(a,b)=>stripLife(a.autor).localeCompare(stripLife(b.autor),'cs')||a.cislo-b.cislo,
+  'author-desc':(a,b)=>stripLife(b.autor).localeCompare(stripLife(a.autor),'cs')||a.cislo-b.cislo
 };
 function current(){return DATA.filter(matches).sort(sorters[state.sort])}
 
