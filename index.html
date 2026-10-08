@@ -230,6 +230,11 @@ a.source:hover{color:var(--accent)}
 .title a{color:var(--accent);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
 .title a:after{content:" \2197";font-weight:800;text-decoration:none;display:inline-block}
 .title a:hover,.title a:focus-visible{background:var(--accent);color:var(--accent-ink);text-decoration-color:transparent}
+.d-group{margin:14px 0 6px;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.d-chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--ink);padding:7px 10px;font-weight:800;font-size:.8rem;color:var(--ink);text-decoration:none;min-height:36px;display:inline-flex;align-items:center}
+.chip:hover,.chip:focus-visible{background:var(--ink);color:var(--paper)}
+.chip.hit{border-width:2px;border-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -392,11 +397,32 @@ const authorUrl=x=>'https://www.databazeknih.cz/search?q='+enc(authorQuery(x));
 const antikUrl=x=>'https://ulovknihu.cz/search?q='+enc(x.dt+' '+firstSurname(x));
 const coverUrl=x=>'https://www.google.com/search?tbm=isch&q='+enc(x.dt+' '+authorQuery(x)+' edice KOD obálka');
 const googleUrl=x=>'https://www.google.com/search?q='+enc(x.dt+' '+authorQuery(x));
+const SEARCH={
+  'Knihobot':q=>'https://knihobot.cz/p?q='+q,
+  'Ulovknihu':q=>'https://ulovknihu.cz/search?q='+q,
+  'Knihy Dobrovský':q=>'https://www.knihydobrovsky.cz/vyhledavani?search='+q,
+  'Kosmas':q=>'https://www.kosmas.cz/hledej/?query='+q,
+  'Martinus':q=>'https://www.martinus.cz/search?q='+q,
+  'Palmknihy':q=>'https://www.palmknihy.cz/vyhledavani?query='+q,
+  'Audioteka':q=>'https://audioteka.com/cz/vyhledavani/?phrase='+q,
+  'Tympanum':q=>'https://www.tympanum.cz/hledani?q='+q
+};
+const searchUrl=(name,x)=>SEARCH[name]?SEARCH[name](enc(x.dt+' '+firstSurname(x))):null;
 function shopHref(source,x,direct){
   if(direct)return direct;
   if(source==='Databáze knih (zdarma)')return dkUrl(x);
+  const u=searchUrl(source,x);if(u)return u;
   const dom=SHOPS[source];
   return dom?'https://www.google.com/search?q='+enc('site:'+dom+' '+x.dt):null;
+}
+/* nejdřív zdroj nalezený průzkumem (přímý odkaz, je-li), pak další velcí prodejci, nejméně tři */
+function shopList(known,direct,pool,x,min){
+  const out=[];const seen=new Set();
+  const add=(name,href,sub,hit)=>{if(!href||seen.has(name))return;seen.add(name);out.push({name:name,href:href,sub:sub,hit:!!hit})};
+  if(known==='Databáze knih (zdarma)')add('Databáze knih (zdarma)',dkUrl(x),'bezplatně');
+  else if(known&&SEARCH[known])add(known,direct||searchUrl(known,x),direct?'přímý odkaz':'nalezeno v průzkumu, hledání',true);
+  pool.forEach(n=>add(n,searchUrl(n,x),'hledání'));
+  return out;
 }
 
 /* stav a filtry */
@@ -451,17 +477,16 @@ function detail(x){
   add('Vydáno v edici',fmtYear(x.rok));
   add('Komentáře',x.kom?nf(x.kom)+' na Databázi knih':null);
   add('Hodnocení',x.pct!=null?x.pct+' %'+(x.hod?' ('+nf(x.hod)+' hodnocení)':''):(x.hod?nf(x.hod)+' hodnocení':null));
-  const links=[el('h3',{text:'Kde to najít'})];
+  const links=[el('h3',{text:'Kde to najít'}),el('p',{class:'d-group',text:'Odkazy vedou na hledání v obchodě. Červený rám: tam to průzkum našel.'})];
   links.push(btn(dkUrl(x),'Databáze knih',x.dk?'hodnocení a komentáře':'hledání v databázi'));
-  if(x.ekniha===true){
-    const h=shopHref(x.ekniha_zdroj,x,x.eurl);
-    if(h)links.push(btn(h,'Ekniha',(x.ekniha_zdroj||'')+(x.eurl?'':' (hledání)')));
-  }
-  if(x.audiokniha===true){
-    const h=shopHref(x.audiokniha_zdroj,x,x.aurl);
-    if(h)links.push(btn(h,'Audiokniha',(x.audiokniha_zdroj||'')+(x.aurl?'':' (hledání)')));
-  }
-  links.push(btn(antikUrl(x),'Antikvariát','hledání na ulovknihu.cz'));
+  const group=(title,list)=>{
+    links.push(el('h4',{class:'d-group',text:title}));
+    links.push(el('div',{class:'d-chips'},...list.map(i=>el('a',{class:'chip'+(i.hit?' hit':''),href:i.href,target:'_blank',rel:'noopener noreferrer',title:i.sub,text:i.name+' \u2197'}))));
+  };
+  group('Papírová kniha, antikvariáty',shopList(null,null,['Knihobot','Ulovknihu'],x,2));
+  group('Nové vydání, pokud existuje',shopList(null,null,['Knihy Dobrovský','Kosmas','Martinus'],x,3));
+  if(x.ekniha===true)group('Ekniha',shopList(x.ekniha_zdroj,x.eurl,['Palmknihy','Knihy Dobrovský','Kosmas','Martinus'],x,3).slice(0,4));
+  if(x.audiokniha===true)group('Audiokniha',shopList(x.audiokniha_zdroj,x.aurl,['Audioteka','Palmknihy','Tympanum','Knihy Dobrovský'],x,3).slice(0,4));
   links.push(btn(coverUrl(x),'Obálky edice KOD','Google obrázky'));
   links.push(btn(googleUrl(x),'Hledat na Googlu'));
   return el('div',{class:'detail',id:'d-'+x.cislo,role:'region','aria-label':'Detail svazku '+x.cislo},
