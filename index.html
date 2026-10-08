@@ -216,7 +216,18 @@ a.source:hover{color:var(--accent)}
   .shelf-row{grid-template-columns:1fr;gap:14px}
 }
 
-  </style>
+  
+@media(max-width:900px){
+  .rating,.format{margin-top:10px}
+  .rating{grid-template-columns:108px auto 1fr;column-gap:10px}
+  .format{grid-template-columns:108px 1fr;column-gap:10px}
+  .mobile-label{white-space:nowrap}
+  .title{margin-bottom:2px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .author{margin-top:10px}
+  .year{margin-top:10px}
+}
+</style>
 </head>
 <body>
   <header class="hero" id="top">
