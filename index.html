@@ -346,7 +346,7 @@ a.source:hover{color:var(--accent)}
       </div>
       <div>
         <dl>
-          <dt>Seznam svazků</dt><dd><a href="https://www.antikvariat-divis.cz/cze/edice/kod" target="_blank" rel="noopener noreferrer">Antikvariát Diviš</a></dd>
+          <dt>Seznam svazků</dt><dd><a href="https://www.antikvariat-divis.cz/cze/edice/kod">Antikvariát Diviš</a></dd>
           <dt>Hodnocení</dt><dd>Databáze knih, odkaz je u každého titulu</dd>
           <dt>Digitální formáty</dt><dd>Palmknihy, Audiolibrix, Audioteka, Tympanum, Kosmas, Knihy Dobrovský a další uvedené zdroje</dd>
           <dt>Stav průzkumu</dt><dd>8. října 2026</dd>
@@ -482,19 +482,19 @@ function formatState(value,source,direct,x){
   box.append(el('span',{class:'state '+(value===true?'yes':value===false?'no':'unknown'),text:value===true?'Ano':value===false?'Nenalezena':'Neověřeno'}));
   if(value===true&&source){
     const href=shopHref(source,x,direct);
-    if(href)box.append(el('a',{class:'source',href:href,target:'_blank',rel:'noopener noreferrer',title:(direct?'Otevřít':'Hledat')+' u: '+source,text:source}));
+    if(href)box.append(el('a',{class:'source',href:href,title:(direct?'Otevřít':'Hledat')+' u: '+source,text:source}));
     else box.append(el('span',{class:'source',text:source}));
   }
   return box;
 }
 function btn(href,label,sub){
-  return el('a',{class:'btn',href:href,target:'_blank',rel:'noopener noreferrer'},el('span',null,label,sub?el('small',{text:sub}):null));
+  return el('a',{class:'btn',href:href,rel:'noopener noreferrer'},el('span',null,label,sub?el('small',{text:sub}):null));
 }
 function detail(x){
   const meta=[];
   const add=(k,v)=>{if(v!=null&&v!=='')meta.push(el('dt',{text:k}),el('dd',null,v))};
   add('Svazek',String(x.cislo));
-  add('Autor',el('a',{href:authorUrl(x),target:'_blank',rel:'noopener noreferrer',text:x.au}));
+  add('Autor',el('a',{href:authorUrl(x),text:x.au}));
   add('Žánry',x.zanry&&x.zanry.length?x.zanry.join(', '):null);
   add('Vydáno v edici',fmtYear(x.rok));
   add('Komentáře',x.kom?nf(x.kom)+' na Databázi knih':null);
@@ -503,7 +503,7 @@ function detail(x){
   links.push(btn(dkUrl(x),'Databáze knih',x.dk?'hodnocení a komentáře':'hledání v databázi'));
   const group=(title,list)=>{
     links.push(el('h4',{class:'d-group',text:title}));
-    links.push(el('div',{class:'d-chips'},...list.map(i=>el('a',{class:'chip'+(i.hit?' hit':''),href:i.href,target:'_blank',rel:'noopener noreferrer',title:i.sub,text:i.name}))));
+    links.push(el('div',{class:'d-chips'},...list.map(i=>el('a',{class:'chip'+(i.hit?' hit':''),href:i.href,title:i.sub,text:i.name}))));
   };
   group('Papírová kniha, antikvariáty',shopList(null,null,['Knihobot','Ulovknihu'],x,2));
   group('Nové vydání, pokud existuje',shopList(null,null,['Knihy Dobrovský','Kosmas','Martinus'],x,3));
