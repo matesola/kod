@@ -275,6 +275,9 @@ a.source:hover{color:var(--accent)}
 .views button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .listhead .right{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .table-head[hidden]{display:none}
+.stickbar{position:sticky;top:0;z-index:20;background:var(--paper)}
+.stickbar .listhead{padding:16px 0 10px}
+@media(max-width:760px){.stickbar .listhead{padding:10px 0 8px}}
 
 /* kompaktní */
 #books[data-view="compact"] .book{grid-template-columns:52px minmax(0,1fr) auto;gap:0 12px;padding:8px 8px 8px 0;min-height:0;align-items:center}
@@ -418,8 +421,8 @@ a.source:hover{color:var(--accent)}
   </section>
 
   <main class="wrap">
-    <div class="listhead"><h2>Katalog svazků</h2><div class="right"><div class="count" id="count" aria-live="polite"></div><div class="views" role="group" aria-label="Zobrazení"><button type="button" data-view="list" aria-pressed="true">Seznam</button><button type="button" data-view="compact" aria-pressed="false">Kompakt</button><button type="button" data-view="grid" aria-pressed="false">Mřížka</button></div></div></div>
-    <div class="table-head" id="thead" aria-hidden="true"><span>Svazek</span><span>Titul</span><span>Autor</span><span>Rok vydání</span><span>Hodnocení</span><span>Ekniha</span><span>Audiokniha</span></div>
+    <div class="stickbar"><div class="listhead"><h2>Katalog svazků</h2><div class="right"><div class="count" id="count" aria-live="polite"></div><div class="views" role="group" aria-label="Zobrazení"><button type="button" data-view="list" aria-pressed="true">Seznam</button><button type="button" data-view="compact" aria-pressed="false">Kompakt</button><button type="button" data-view="grid" aria-pressed="false">Mřížka</button></div></div></div>
+    <div class="table-head" id="thead" aria-hidden="true"><span>Svazek</span><span>Titul</span><span>Autor</span><span>Rok vydání</span><span>Hodnocení</span><span>Ekniha</span><span>Audiokniha</span></div></div>
     <div id="books"></div>
     <div id="empty" class="empty" hidden><strong>Nic tu není.</strong><span>Zkus jiný výraz nebo filtr.</span></div>
 
