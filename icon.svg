@@ -1,8 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-<defs><clipPath id="c"><rect width="64" height="64" rx="12"/></clipPath></defs>
-<g clip-path="url(#c)"><rect width="64" height="64" fill="#d94a32"/>
-<g fill="#141414"><rect x="0" y="9" width="23" height="5"/><rect x="0" y="18" width="23" height="5"/><rect x="0" y="27" width="23" height="5"/><rect x="0" y="58" width="64" height="6"/></g>
-<rect x="28" y="0" width="36" height="40" fill="#fbf4dc"/>
-<path d="M36 34V8h6v11l10-11h7.5L48 20l12 14h-7.5L42 22.5V34z" fill="#141414"/>
-</g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><clipPath id="c"><rect width="512" height="512" rx="96"/></clipPath></defs><g clip-path="url(#c)"><rect width="512" height="512" fill="#e8dc6a"/><g fill="#141414"><clipPath id="k"><rect x="56" y="44" width="100" height="112"/></clipPath><rect x="56" y="44" width="34" height="112"/><g clip-path="url(#k)" stroke="#141414" stroke-width="34" fill="none"><path d="M86 102.0L162 38"/><path d="M96 94.0L162 162"/></g><circle cx="112.0" cy="230.0" r="39.0" fill="none" stroke="#141414" stroke-width="34"/><path fill-rule="evenodd" d="M56 304H104.0A56.0 56.0 0 0 1 104.0 416H56Z M90 338H104.0A22.0 22.0 0 0 1 104.0 382H90Z"/><rect x="182" y="89.0" width="330" height="22"/><rect x="194" y="219.0" width="318" height="22"/><rect x="186" y="349.0" width="326" height="22"/><rect x="0" y="446" width="512" height="66"/></g></g></svg>
